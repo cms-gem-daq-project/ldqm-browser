@@ -11,7 +11,7 @@ def process_chunk(m_filename, chunk):
   t_filename = m_filename+"_chunk_"+str(chunk)
 #call root converter
   call_command =  os.getenv('BUILD_HOME')+'/gem-light-dqm/gemtreewriter/bin/'+os.getenv('XDAQ_OS')+'/'+os.getenv('XDAQ_PLATFORM')+'/unpacker'
-  command_args = "/tmp/"+t_filename+".dat sdram"
+  command_args = os.getenv('GEM_DATA_DIR')+"/"+t_filename+".dat sdram"
   call([call_command+' '+command_args],shell=True)
 #create dirs in tmp
   for i in range (24):
@@ -20,34 +20,34 @@ def process_chunk(m_filename, chunk):
   call(["mkdir -p /tmp/dqm_hists/canvases"],shell=True)
 #call dqm
   call_command =  os.getenv('BUILD_HOME')+'/gem-light-dqm/dqm-root/bin/'+os.getenv('XDAQ_OS')+'/'+os.getenv('XDAQ_PLATFORM')+'/dqm'
-  command_args = "/tmp/"+t_filename+".raw.root"
+  command_args = os.getenv('GEM_DATA_DIR')+"/"+t_filename+".raw.root"
   os.system(call_command+' '+command_args)
 #call hadd if not the first chunk, otherwise rename
-  if (os.path.isfile("/tmp/"+m_filename+".analyzed.root")):
+  if (os.path.isfile(os.getenv('GEM_DATA_DIR')+"/"+m_filename+".analyzed.root")):
     call_command = "hadd -v 0 " 
-    command_args = "/tmp/hadd_tmp.root " + "/tmp/" + m_filename+".analyzed.root" + " " + "/tmp/" + t_filename+".analyzed.root"
+    command_args = "/tmp/hadd_tmp.root "+os.getenv('GEM_DATA_DIR')+"/"+m_filename+".analyzed.root"+" "+os.getenv('GEM_DATA_DIR')+"/"+t_filename+".analyzed.root"
     os.system(call_command+' '+command_args)
-    call(["rm "+ "/tmp/" + t_filename+".analyzed.root"],shell=True)
-    call(["mv "+ "/tmp/hadd_tmp.root " + "/tmp/" + m_filename+".analyzed.root"],shell=True)
-    command_args = "/tmp/hadd_tmp.root " + "/tmp/" + m_filename+".raw.root" + " " + "/tmp/" + t_filename+".raw.root"
+    call(["rm "+ os.getenv('GEM_DATA_DIR')+"/"+t_filename+".analyzed.root"],shell=True)
+    call(["mv "+ "/tmp/hadd_tmp.root "+os.getenv('GEM_DATA_DIR')+"/"+m_filename+".analyzed.root"],shell=True)
+    command_args = "/tmp/hadd_tmp.root "+os.getenv('GEM_DATA_DIR')+"/"+m_filename+".raw.root"+" "+os.getenv('GEM_DATA_DIR')+"/"+t_filename+".raw.root"
     os.system(call_command+' '+command_args)
-    call(["rm "+ "/tmp/" + t_filename+".raw.root"],shell=True)
-    call(["mv "+ "/tmp/hadd_tmp.root " + "/tmp/" + m_filename+".raw.root"],shell=True)
-    file('/tmp/add_tmp.dat','wb').write(file("/tmp/" + t_filename+".dat",'rb').read()+file("/tmp/" + m_filename+".dat",'rb').read())
-    call(["rm "+ "/tmp/" + t_filename+".dat"],shell=True)
-    call(["mv "+ "/tmp/add_tmp.dat " + "/tmp/" + m_filename+".dat"],shell=True)
+    call(["rm "+ os.getenv('GEM_DATA_DIR')+"/"+t_filename+".raw.root"],shell=True)
+    call(["mv "+ "/tmp/hadd_tmp.root "+os.getenv('GEM_DATA_DIR')+"/"+m_filename+".raw.root"],shell=True)
+    file('/tmp/add_tmp.dat','wb').write(file(os.getenv('GEM_DATA_DIR')+"/"+t_filename+".dat",'rb').read()+file(os.getenv('GEM_DATA_DIR')+"/"+m_filename+".dat",'rb').read())
+    call(["rm "+ os.getenv('GEM_DATA_DIR')+"/"+t_filename+".dat"],shell=True)
+    call(["mv "+ "/tmp/add_tmp.dat "+os.getenv('GEM_DATA_DIR')+"/"+m_filename+".dat"],shell=True)
   else:
-    call(["mv "+ "/tmp/" + t_filename+".analyzed.root" + " " + "/tmp/" + m_filename+".analyzed.root"],shell=True)
-    call(["mv "+ "/tmp/" + t_filename+".raw.root" + " " + "/tmp/" + m_filename+".raw.root"],shell=True)
-    call(["mv "+ "/tmp/" + t_filename+".dat" + " " + "/tmp/" + m_filename+".dat"],shell=True)
+    call(["mv "+ os.getenv('GEM_DATA_DIR')+"/"+t_filename+".analyzed.root"+" "+os.getenv('GEM_DATA_DIR')+"/"+m_filename+".analyzed.root"],shell=True)
+    call(["mv "+ os.getenv('GEM_DATA_DIR')+"/"+t_filename+".raw.root"+" "+os.getenv('GEM_DATA_DIR')+"/"+m_filename+".raw.root"],shell=True)
+    call(["mv "+ os.getenv('GEM_DATA_DIR')+"/"+t_filename+".dat"+" "+os.getenv('GEM_DATA_DIR')+"/"+m_filename+".dat"],shell=True)
 
 #call dqm printer
   call_command =  os.getenv('BUILD_HOME')+'/gem-light-dqm/dqm-root/bin/'+os.getenv('XDAQ_OS')+'/'+os.getenv('XDAQ_PLATFORM')+'/onlineprinter'
-  command_args = "/tmp/"+m_filename+".analyzed.root"
+  command_args = os.getenv('GEM_DATA_DIR')+"/"+m_filename+".analyzed.root"
   os.system(call_command+' '+command_args)
 
 #update AMC/GEB/VFAT states
-  command_args = "/tmp/"+m_filename+".analyzed.root"
+  command_args = os.getenv('GEM_DATA_DIR')+"/"+m_filename+".analyzed.root"
   print '[dqm-daemon] Updating HW states'
   updateStates(command_args)
   print '[dqm-daemon] States updated!'
@@ -55,7 +55,7 @@ def process_chunk(m_filename, chunk):
 #copy results to DQM display form
   call_command = os.getenv('LDQM_STATIC')+'/'
   call(["mkdir -p "+call_command],shell=True)
-  call(["cp -r /tmp/"+m_filename+" "+call_command],shell=True)
+  call(["cp -r "+os.getenv('GEM_DATA_DIR')+"/"+m_filename+" "+call_command],shell=True)
 
   return
 
@@ -69,7 +69,7 @@ def run_dqm():
       print "Index Error"
       continue
     fname_base = run.Name
-    globname = glob.glob('/tmp/'+fname_base+'_chunk_*.dat')
+    globname = glob.glob(os.getenv('GEM_DATA_DIR')+'/'+fname_base+'_chunk_*.dat')
     print len(globname), 'chunks remaining to process for',run.Name
     for fname in globname:
       print fname
@@ -78,6 +78,3 @@ def run_dqm():
       file_exist = os.path.isfile(fname) 
       if file_exist:
         process_chunk(fname_base, chunk)
-
-
-
