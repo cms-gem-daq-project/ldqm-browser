@@ -109,11 +109,11 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'bugtracker/bugtracker_db.sqlite3'),
     },
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ldqm_test_db',
-        'PORT': 3306,
-        'HOST': 'gem904daq01',
-        'USER': 'gemdaq',
+        'ENGINE':  'django.db.backends.mysql',
+        'NAME':     'ldqm_tif_qc8_db',
+        'PORT':     3306,
+        'HOST':     'cosmicstandtif',
+        'USER':     'gemdaq',
         'PASSWORD': 'gemdaq',
     }
 

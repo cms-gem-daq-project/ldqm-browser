@@ -6,3 +6,5 @@ else
     return
 fi
 export LDQM_STATIC=${BUILD_HOME}/ldqm-browser/LightDQM/LightDQM/test
+export PYTHONPATH=$PYTHONPATH:/opt/cactus/lib
+#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/cactus/lib #unnecessary as this is set in the main profile

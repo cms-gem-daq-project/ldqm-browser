@@ -58,24 +58,24 @@ def gemsupervisor(request):
   def parkData():
 #call root converter
     call_command =  os.getenv('BUILD_HOME')+'/gem-light-dqm/gemtreewriter/bin/'+os.getenv('XDAQ_OS')+'/'+os.getenv('XDAQ_PLATFORM')+'/unpacker'
-    command_args = "/tmp/"+m_filename+".dat sdram"
+    command_args = os.getenv('GEM_DATA_DIR')+"/"+m_filename+".dat sdram"
     call([call_command+' '+command_args],shell=True)
 #create dirs in tmp
     for i in range (24):
-      call(["mkdir -p /tmp/dqm_hists/%s"%(i)],shell=True)
-    call(["mkdir -p /tmp/dqm_hists/OtherData"],shell=True)
-    call(["mkdir -p /tmp/dqm_hists/canvases"],shell=True)
+      call(["mkdir -p %s/dqm_hists/%s"%(i)],shell=True)
+    call(["mkdir -p %s/dqm_hists/OtherData"%(os.getenv('GEM_DATA_DIR'))],shell=True)
+    call(["mkdir -p %s/dqm_hists/canvases" %(os.getenv('GEM_DATA_DIR'))],shell=True)
 #call dqm
     call_command =  os.getenv('BUILD_HOME')+'/gem-light-dqm/dqm-root/bin/'+os.getenv('XDAQ_OS')+'/'+os.getenv('XDAQ_PLATFORM')+'/dqm'
-    command_args = "/tmp/"+m_filename+".raw.root"
+    command_args = os.getenv('GEM_DATA_DIR')+"/"+m_filename+".raw.root"
     os.system(call_command+' '+command_args)
 #call dqm printer
     call_command =  os.getenv('BUILD_HOME')+'/gem-light-dqm/dqm-root/bin/'+os.getenv('XDAQ_OS')+'/'+os.getenv('XDAQ_PLATFORM')+'/gtprinter'
-    command_args = "/tmp/"+m_filename+".analyzed.root"
+    command_args = os.getenv('GEM_DATA_DIR')+"/"+m_filename+".analyzed.root"
     os.system(call_command+' '+command_args)
 
 #update AMC/GEB/VFAT states
-    command_args = "/tmp/"+m_filename+".analyzed.root"
+    command_args = os.getenv('GEM_DATA_DIR')+"/"+m_filename+".analyzed.root"
     print 'Updating HW states...'
     updateStates(command_args)
     print 'States updated!'
@@ -83,7 +83,7 @@ def gemsupervisor(request):
 #copy results to DQM display form
     call_command = os.getenv('LDQM_STATIC')+'/'
     call(["mkdir -p "+call_command],shell=True)
-    call(["cp -r /tmp/"+m_filename+" "+call_command],shell=True)
+    call(["cp -r "+os.getenv('GEM_DATA_DIR')+"/"+m_filename+" "+call_command],shell=True)
 
   if request.POST:
     if 'configure' in request.POST:
@@ -197,7 +197,7 @@ def gemsupervisor(request):
       #form = ConfigForm()
       updateStatus()
       nevents = int(request.POST['nevents'])
-      t = threading.Thread(target = m_AMC13manager.startDataTaking, args = ["/tmp/"+m_filename])
+      t = threading.Thread(target = m_AMC13manager.startDataTaking, args = [os.getenv('GEM_DATA_DIR')+"/"+m_filename])
       t.start()
       state = 'running'
 
