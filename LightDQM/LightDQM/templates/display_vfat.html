@@ -23,6 +23,7 @@ $(document).ready(function startGUI() {
   //d3.select('html').style('height','100%');
   //d3.select('body').style({'min-height':'100%', 'margin':'0px', "overflow" :"hidden"});
   console.log("StartGUI called")
+  updateGUI();
   var monitor = JSROOT.GetUrlOption("monitoring");
   if ((monitor == "") || (monitor==null)) 
      monitor = 10000;
