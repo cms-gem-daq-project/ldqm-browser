@@ -23,7 +23,7 @@ def process_chunk(m_filename, chunk):
   command_args = os.getenv('GEM_DATA_DIR')+"/"+t_filename+".raw.root"
   os.system(call_command+' '+command_args)
 #call hadd if not the first chunk, otherwise rename
-  if (os.path.isfile(os.getenv('GEM_DATA_DIR')+"/"+m_filename+".analyzed.root")):
+  if (os.path.isfile(os.getenv('GEM_DATA_DIR')+"/"+m_filename+".dat")):
     call_command = "hadd -v 0 " 
     command_args = "/tmp/hadd_tmp.root "+os.getenv('GEM_DATA_DIR')+"/"+m_filename+".analyzed.root"+" "+os.getenv('GEM_DATA_DIR')+"/"+t_filename+".analyzed.root"
     os.system(call_command+' '+command_args)
