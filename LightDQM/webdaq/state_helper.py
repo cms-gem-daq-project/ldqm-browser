@@ -32,7 +32,7 @@ address_list = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]; #hex ID
 def updateStates(rootFilename):
     rootFile = ROOT.TFile(rootFilename,"READ")
     runName = rootFilename[rootFilename.rfind('run',0,len(rootFilename)):-14]
-    print 'Run Name:',runName
+    print 'Updating system states for run name:',runName
     run = Run.objects.get(Name=runName)
     if not run:
         print "Could not locate %s in database"%runName
@@ -41,6 +41,7 @@ def updateStates(rootFilename):
     systemState = run.State
 
     if not systemState:
+        print "Adding new system state"
         newSystemState = SystemState()
         newSystemState.save()
         systemState = newSystemState
@@ -54,9 +55,12 @@ def updateStates(rootFilename):
         entries = int(hist.GetEntries())
     
         vfatSlot,geb,amc = parsePath(path,hist.GetName())
-        # print 'VFAT Slot:',vfatSlot
-        # print 'GEB:',geb
-        # print 'AMC:',amc
+	
+        print '================================================================'
+        print 'Updating state for:'
+        print 'VFAT Slot:',vfatSlot
+        print 'GEB:',geb
+        print 'AMC:',amc
         
         geb = 'GTX-'+str(geb)
         amc = 'AMC-'+str(amc)
@@ -65,8 +69,9 @@ def updateStates(rootFilename):
         if entries>0:
             if hist.GetName() == "Warnings": newState = 1
             if hist.GetName() == "Errors": newState = 3
-        # print "New State:",newState
+        print "New State:",newState
             
+        print '================================================================'
         #Check if HWStates in DB
 
 
@@ -120,10 +125,10 @@ def updateStates(rootFilename):
                 ahws.save()
                 systemState.amcStates.add(ahws)
             else:
-                # print 'Getting existing AMC system state:',amc
+                print 'Getting existing AMC system state:',amc
                 ahws = systemState.amcStates.get(HWID=amc)
-                # print 'ahws.State:',ahws.State
-                # print 'newState:',newState
+                print 'ahws.State:',ahws.State
+                print 'newState:',newState
                 if int(ahws.State) < newState:
                     # print 'Updating with new state!'
                     print amc,ahws.State,'-->',newState

@@ -30,15 +30,15 @@ def getVFATSlots(run,amc,geb):
 
     # Find correct GEB, add associated VFATs to vfat_address
     try:
-        AMC = run.amcs.get(BoardID=amc)
+        mAMC = run.amcs.get(BoardID=amc)
         #check here
-        GEB = AMC.gebs.get(ChamberID=geb)
-        VFATs = GEB.vfats.all()
+        mGEB = mAMC.gebs.get(ChamberID=geb)
+        VFATs = mGEB.vfats.all()
     except:
         print "Error accessing database for run:",run.Name
 
-    for VFAT in VFATs:
-        vfat_address[VFAT.Slot] = VFAT.ChipID
+    for mVFAT in VFATs:
+        vfat_address[mVFAT.Slot] = mVFAT.ChipID
 
     return vfat_address
 

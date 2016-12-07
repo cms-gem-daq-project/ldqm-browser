@@ -22,6 +22,7 @@
     //d3.select('html').style('height','100%');
     //d3.select('body').style({'min-height':'100%', 'margin':'0px', "overflow" :"hidden"});
     console.log("StartGUI called")
+    updateGUI();
     var monitor = JSROOT.GetUrlOption("monitoring");
     if ((monitor == "") || (monitor==null)) 
        monitor = 1000;
@@ -34,7 +35,7 @@
     setInterval(updateGUI, monitor);
     // let adjust drawing when browser will be resized
     var frame ="{{canvas}}";
-    JSROOT.RegisterForResize(frame);
+    //JSROOT.RegisterForResize(frame);
   });
   </script>
 </div></center>

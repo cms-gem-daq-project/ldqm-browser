@@ -55,7 +55,8 @@ def process_chunk(m_filename, chunk):
 #copy results to DQM display form
   call_command = os.getenv('LDQM_STATIC')+'/'
   call(["mkdir -p "+call_command],shell=True)
-  call(["cp -r "+os.getenv('GEM_DATA_DIR')+"/"+m_filename+" "+call_command],shell=True)
+  #call(["cp -r "+os.getenv('GEM_DATA_DIR')+"/"+m_filename+" "+call_command],shell=True)
+  call(["cp -r "+"/tmp/"+m_filename+" "+call_command],shell=True)
 
   return
 

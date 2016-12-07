@@ -25,14 +25,14 @@ class GEB(models.Model):
   ChamberID = models.CharField(max_length=30)
   vfats = models.ManyToManyField(VFAT)
   def __unicode__(self):
-    return self.Type # or better id?
+    return self.ChamberID
 
 class AMC(models.Model):
   BoardID = models.CharField(max_length=30)
   Type = models.CharField(max_length=30)
   gebs = models.ManyToManyField(GEB)
   def __unicode__(self):
-    return self.Type # or better id?
+    return self.BoardID # or better id?
 
 class Run(models.Model):
   Name = models.CharField(max_length=50)
